@@ -361,3 +361,30 @@ async function run() {
                 res.status(500).send({ message: 'Server error: Failed to cancel the booking.' });
             }
         });
+
+        app.get('/', (req, res) => {
+            res.send('AthleticHub Server is up and running!');
+        });
+
+        console.log("Pinged your deployment. You successfully connected to MongoDB!")
+        
+
+    }
+
+    finally {
+
+    }
+
+
+
+
+}
+
+run().catch(console.dir);
+
+app.listen(port, () => {
+    console.log(`AthleticHub server is listening on port ${port}`);
+});
+
+module.exports = app;
+
