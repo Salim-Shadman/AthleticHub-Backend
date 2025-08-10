@@ -2,7 +2,7 @@
 
 This is the official backend server for the AthleticHub project. Built with Express.js, this server provides a robust RESTful API for the AthleticHub frontend, handling all data management for user authentication, event management, and bookings.
 
-**Live API Base URL:** [https://assignment-11-server-three-sage.vercel.app](https://assignment-11-server-three-sage.vercel.app)
+**Live API Base URL:** https://assignment-11-server-three-sage.vercel.app
 Frontend repo link : https://github.com/Salim-Shadman/AthleticHub-Frontend.git
 ---
 
