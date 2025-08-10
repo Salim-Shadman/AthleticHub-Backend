@@ -281,3 +281,83 @@ async function run() {
 
             }
         });
+
+         //new booking create er route
+        app.post('/bookings', verifyToken, async (req, res) => {
+
+
+            try {
+
+                const bookingData = req.body;
+
+
+                //ownership check
+                if (req.user.email !== bookingData.user_email) {
+
+                    return res.status(403).send({ message: 'Forbidden action. You cannot book an event for another user.' });
+                }
+
+
+
+                //age book korche kina check korlam
+                const existingBooking = await bookingsCollection.findOne({
+
+                    eventId: bookingData.eventId,
+                    user_email: bookingData.user_email
+
+                });
+
+
+
+
+                if (existingBooking) {
+
+                    return res.status(400).send({ message: 'You have already booked this event.' });
+
+                }
+
+
+
+                const result = await bookingsCollection.insertOne(bookingData);
+                res.send(result);
+
+
+            } catch (err) {
+
+
+                res.status(500).send({ message: 'Server error: Failed to create booking.' });
+            }
+        });
+
+
+
+
+
+
+
+
+        //booking delete korar route
+        app.delete('/bookings/:id', verifyToken, async (req, res) => {
+
+            try {
+
+                const id = req.params.id;
+                const query = { _id: new ObjectId(id) };
+
+
+                const booking = await bookingsCollection.findOne(query);
+                if (!booking) {
+                    return res.status(404).send({ message: 'Booking not found.' });
+                }
+
+
+                if (req.user.email !== booking.user_email) {
+                    return res.status(403).send({ message: 'Forbidden action. You cannot cancel this booking.' });
+                }
+
+                const result = await bookingsCollection.deleteOne(query);
+                res.send(result);
+            } catch (err) {
+                res.status(500).send({ message: 'Server error: Failed to cancel the booking.' });
+            }
+        });
