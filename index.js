@@ -97,6 +97,7 @@ async function run() {
 
         });
 
+        //user logout hoile jwt token clear hobe
  app.post('/logout', (req, res) => {
 
 
@@ -108,8 +109,30 @@ async function run() {
 
 
         });
-        //user logout hoile jwt token clear hobe
 
    
+ //sob event er route ekhane dibo
+        app.get('/events', async (req, res) => {
+
+            try {
+
+                let query = {};
+
+                if (req.query.creatorEmail) {
+
+                    query = { creatorEmail: req.query.creatorEmail };
+
+                }
+
+
+                const events = await eventsCollection.find(query).sort({ date: -1 }).toArray();
+                res.send(events);
+
+            } catch (err) {
+
+                res.status(500).send({ message: 'Server error: Failed to fetch events' });
+            }
+
+        });
 
 
