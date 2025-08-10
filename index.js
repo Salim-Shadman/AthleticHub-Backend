@@ -97,8 +97,10 @@ async function run() {
 
         });
 
+
         //user logout hoile jwt token clear hobe
- app.post('/logout', (req, res) => {
+
+        app.post('/logout', (req, res) => {
 
 
             res.clearCookie('token', {
@@ -110,8 +112,8 @@ async function run() {
 
         });
 
-   
- //sob event er route ekhane dibo
+
+        //sob event er route ekhane dibo
         app.get('/events', async (req, res) => {
 
             try {
@@ -136,7 +138,7 @@ async function run() {
         });
 
 
-   //get a single event 
+        //get a single event 
         app.get('/events/:id', async (req, res) => {
 
             try {
@@ -180,7 +182,9 @@ async function run() {
             }
         });
 
-         //event er data update route
+
+
+        //event er data update route
         app.put('/events/:id', verifyToken, async (req, res) => {
 
             try {
@@ -282,7 +286,8 @@ async function run() {
             }
         });
 
-         //new booking create er route
+
+        //new booking create er route
         app.post('/bookings', verifyToken, async (req, res) => {
 
 
@@ -362,6 +367,10 @@ async function run() {
             }
         });
 
+
+
+
+
         app.get('/', (req, res) => {
             res.send('AthleticHub Server is up and running!');
         });
@@ -387,4 +396,6 @@ app.listen(port, () => {
 });
 
 module.exports = app;
+
+
 
