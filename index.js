@@ -136,3 +136,46 @@ async function run() {
         });
 
 
+   //get a single event 
+        app.get('/events/:id', async (req, res) => {
+
+            try {
+
+                const id = req.params.id;
+                const query = { _id: new ObjectId(id) };
+                const event = await eventsCollection.findOne(query);
+
+                res.send(event || {});
+
+            } catch (err) {
+
+                res.status(500).send({ message: 'Server error: Failed to fetch event details.' });
+
+            }
+        });
+
+
+
+
+        //new event create korar route
+        app.post('/events', verifyToken, async (req, res) => {
+
+            try {
+                const eventData = req.body;
+
+                //logged in user e event create korche kina check korlam
+                if (req.user.email !== eventData.creatorEmail) {
+
+                    return res.status(403).send({ message: 'Forbidden action. You cannot create an event for another user.' });
+                }
+
+                const result = await eventsCollection.insertOne(eventData);
+                res.send(result);
+
+
+            } catch (err) {
+
+                res.status(500).send({ message: 'Server error: Failed to create the event.' });
+
+            }
+        });
