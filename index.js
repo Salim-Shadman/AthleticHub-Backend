@@ -179,3 +179,105 @@ async function run() {
 
             }
         });
+
+         //event er data update route
+        app.put('/events/:id', verifyToken, async (req, res) => {
+
+            try {
+
+                const id = req.params.id;
+                const updatedEventData = req.body;
+
+
+                if (req.user.email !== updatedEventData.creatorEmail) {
+                    return res.status(403).send({ message: 'Forbidden action. You are not the owner of this event.' });
+                }
+
+
+                const filter = { _id: new ObjectId(id) };
+
+
+                const updateDoc = {
+
+                    $set: {
+
+                        eventName: updatedEventData.eventName,
+                        eventType: updatedEventData.eventType,
+                        date: updatedEventData.date,
+                        description: updatedEventData.description,
+                        image: updatedEventData.image,
+                        location: updatedEventData.location,
+
+
+                    },
+                };
+
+                const result = await eventsCollection.updateOne(filter, updateDoc);
+                res.send(result);
+
+            } catch (err) {
+
+                res.status(500).send({ message: 'Server error: Failed to update the event.' });
+            }
+        });
+
+
+        //event delete korar route..
+        app.delete('/events/:id', verifyToken, async (req, res) => {
+
+            try {
+                const id = req.params.id;
+                const query = { _id: new ObjectId(id) };
+
+                //delete korar age ownership verify korlam
+                const event = await eventsCollection.findOne(query);
+                if (!event) {
+                    return res.status(404).send({ message: 'Event not found.' });
+                }
+
+
+                if (req.user.email !== event.creatorEmail) {
+
+                    return res.status(403).send({ message: 'Forbidden action. You do not have permission to delete this event.' });
+                }
+
+                const result = await eventsCollection.deleteOne(query);
+
+                res.send(result);
+
+
+
+            } catch (err) {
+                res.status(500).send({ message: 'Server error: Failed to delete the event.' });
+            }
+
+        });
+
+
+
+        //get bookings er route
+        app.get('/bookings', verifyToken, async (req, res) => {
+
+
+            try {
+
+
+                if (req.user.email !== req.query.email) {
+
+
+                    return res.status(403).send({ message: 'Forbidden. You can only view your own bookings.' });
+
+                }
+
+                const bookings = await bookingsCollection.find({ user_email: req.query.email }).toArray();
+                res.send(bookings);
+
+
+
+            } catch (err) {
+
+                // console.error(err);
+                res.status(500).send({ message: 'Server error: Failed to fetch bookings.' });
+
+            }
+        });
